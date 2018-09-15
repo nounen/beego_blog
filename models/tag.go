@@ -10,7 +10,8 @@ import (
 )
 
 type Tag struct {
-	Id        int64
+	Id int64
+	//Id        int64     `orm:"auto"`
 	Name      string    `orm:"size(128)"`
 	CreatedAt time.Time `orm:"type(datetime)"`
 	DeletedAt time.Time `orm:"type(datetime)"`
@@ -42,13 +43,13 @@ func GetTagById(id int64) (v *Tag, err error) {
 // GetAllTag retrieves all Tag matches certain condition. Returns empty list if
 // no records exist
 func GetAllTag(
-		query map[string]string,
-		fields []string,
-		sortby []string,
-		order []string,
-		offset int64,
-		limit int64,
-	) (ml []interface{}, err error) {
+	query map[string]string,
+	fields []string,
+	sortby []string,
+	order []string,
+	offset int64,
+	limit int64,
+) (ml []interface{}, err error) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(Tag))
 

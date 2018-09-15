@@ -17,7 +17,7 @@ func init() {
 	ns := beego.NewNamespace("/v1",
 		beego.NSNamespace("/tag",
 			beego.NSRouter("/", &controllers.TagController{}, "get:Index"),
-			//beego.NSRouter("/", &controllers.TagController{}, "post:Store"),
+			beego.NSRouter("/", &controllers.TagController{}, "post:Store"),
 			//beego.NSRouter("/?:id:int", &controllers.TagController{}, "get:Show"),
 			//beego.NSRouter("/?:id:int", &controllers.TagController{}, "put:Update"),
 		),
