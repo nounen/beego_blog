@@ -43,6 +43,18 @@ func (c *TagController) Show() {
 	}
 }
 
+// Update 更新数据
+func (c *TagController) Update() {
+	Tag := c.getTagFromRequest()
+	Tag.Id = c.getId()
+
+	if err := models.UpdateTagById(Tag); err == nil {
+		c.RespondNoContentJson()
+	} else {
+		c.RespondBadJson(err)
+	}
+}
+
 // getTagFromRequest 获取表单提交数据
 func (c *TagController) getTagFromRequest() *models.Tag {
 	Tag := &models.Tag{}

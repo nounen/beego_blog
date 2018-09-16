@@ -41,9 +41,16 @@ func (c *BaseController) RespondBadJson(err error) {
 	c.StopRun() // 防止出错后继续执行后面的代码
 }
 
-// RespondBadJson 操作成功响应
+// RespondCreatedJson 操作成功响应
 func (c *BaseController) RespondCreatedJson() {
 	c.Ctx.Output.SetStatus(http.StatusCreated)
+	c.Json["message"] = "操作成功"
+	c.RespondJson()
+}
+
+// RespondNoContentJson 操作成功响应
+func (c *BaseController) RespondNoContentJson() {
+	c.Ctx.Output.SetStatus(http.StatusNoContent)
 	c.Json["message"] = "操作成功"
 	c.RespondJson()
 }
