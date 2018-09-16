@@ -33,6 +33,16 @@ func (c *TagController) Store() {
 	}
 }
 
+// Show 查看数据
+func (c *TagController) Show() {
+	if Tag, err := models.GetTagById(c.getId()); err == nil {
+		c.Json["Tag"] = &Tag
+		c.RespondJson()
+	} else {
+		c.RespondBadJson(err)
+	}
+}
+
 // getTagFromRequest 获取表单提交数据
 func (c *TagController) getTagFromRequest() *models.Tag {
 	Tag := &models.Tag{}

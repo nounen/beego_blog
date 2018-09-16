@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"net/http"
+	"strconv"
 )
 
 type BaseController struct {
@@ -15,6 +16,14 @@ type BaseController struct {
 func (c *BaseController) Prepare() {
 	// 用于 json 数据返回
 	c.Json = map[string]interface{}{}
+}
+
+// getId 获取路由上的 :id 参数, 并做类型转换
+func (c *BaseController) getId() int64 {
+	// string 转 int64, 如何直接拿到想要类型呢
+	id, _ := strconv.ParseInt(c.Ctx.Input.Param(":id"), 10, 64)
+
+	return id
 }
 
 // RespondJson 响应 json
