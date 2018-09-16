@@ -55,6 +55,15 @@ func (c *TagController) Update() {
 	}
 }
 
+// Delete 删除数据
+func (c *TagController) Delete() {
+	if err := models.DeleteTag(c.getId()); err == nil {
+		c.RespondNoContentJson()
+	} else {
+		c.RespondBadJson(err)
+	}
+}
+
 // getTagFromRequest 获取表单提交数据
 func (c *TagController) getTagFromRequest() *models.Tag {
 	Tag := &models.Tag{}
