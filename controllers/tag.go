@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"beego_blog/models"
+	"github.com/astaxie/beego/validation"
 	"time"
 )
 
@@ -26,7 +27,10 @@ func (c *TagController) Index() {
 
 // Store 创建数据
 func (c *TagController) Store() {
-	if _, err := models.AddTag(c.getTagFromRequest()); err == nil {
+	Tag := c.getTagFromRequest()
+	c.checkTagFromRequest(Tag)
+
+	if _, err := models.AddTag(Tag); err == nil {
 		c.RespondCreatedJson()
 	} else {
 		c.RespondBadJson(err)
@@ -46,6 +50,7 @@ func (c *TagController) Show() {
 // Update 更新数据
 func (c *TagController) Update() {
 	Tag := c.getTagFromRequest()
+	c.checkTagFromRequest(Tag)
 	Tag.Id = c.getId()
 
 	if err := models.UpdateTagById(Tag); err == nil {
@@ -70,4 +75,13 @@ func (c *TagController) getTagFromRequest() *models.Tag {
 	c.UnmarshalRequestJson(Tag)
 	Tag.CreatedAt = time.Now()
 	return Tag
+}
+
+// checkTagFromRequest 表单验证
+func (c *TagController) checkTagFromRequest(Tag *models.Tag) {
+	valid := validation.Validation{}
+	valid.Required(Tag.Name, "Name")
+	valid.MaxSize(Tag.Name, 12, "Name")
+
+	c.RespondIfBadEntityJson(&valid)
 }

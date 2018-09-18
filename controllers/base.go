@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/validation"
 	"net/http"
 	"strconv"
 )
@@ -39,6 +40,26 @@ func (c *BaseController) RespondBadJson(err error) {
 	c.Json["error"] = err.Error()
 	c.RespondJson()
 	c.StopRun() // 防止出错后继续执行后面的代码
+}
+
+// RespondBadEntityJson 如果表单验证失败响应
+func (c *BaseController) RespondIfBadEntityJson(valid *validation.Validation) {
+	if valid.HasErrors() {
+		c.Ctx.Output.SetStatus(http.StatusUnprocessableEntity)
+
+		message := ""
+		messages := map[string]string{}
+
+		for _, error := range valid.Errors {
+			message += error.Key + " " + error.Message + ";"
+			messages[error.Key] = error.Message
+		}
+
+		c.Json["message"] = message
+		c.Json["messages"] = messages
+		c.RespondJson()
+		c.StopRun()
+	}
 }
 
 // RespondCreatedJson 操作成功响应
