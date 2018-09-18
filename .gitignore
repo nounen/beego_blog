@@ -1,2 +1,3 @@
 .idea/
 beego_blog
+conf/app.conf
