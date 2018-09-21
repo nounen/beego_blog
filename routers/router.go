@@ -22,6 +22,14 @@ func init() {
 			beego.NSRouter("/?:id:int", &controllers.TagController{}, "put:Update"),
 			beego.NSRouter("/?:id:int", &controllers.TagController{}, "delete:Delete"),
 		),
+
+		beego.NSNamespace("/article",
+			beego.NSRouter("/", &controllers.ArticleController{}, "get:Index"),
+			beego.NSRouter("/", &controllers.ArticleController{}, "post:Store"),
+			beego.NSRouter("/?:id:int", &controllers.ArticleController{}, "get:Show"),
+			beego.NSRouter("/?:id:int", &controllers.ArticleController{}, "put:Update"),
+			beego.NSRouter("/?:id:int", &controllers.ArticleController{}, "delete:Delete"),
+		),
 	)
 	beego.AddNamespace(ns)
 }
