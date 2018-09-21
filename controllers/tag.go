@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"beego_blog/models"
+	"beego_blog/utils"
+	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/validation"
 	"time"
 )
@@ -12,16 +14,23 @@ type TagController struct {
 
 // Index 列表数据
 func (c *TagController) Index() {
-	Tags, _ := models.GetAllTag(
-		map[string]string{},
-		[]string{"Id", "Name", "CreatedAt", "DeletedAt"},
-		[]string{},
-		[]string{},
-		0,
-		10,
+	Paging := utils.Paging(
+		orm.NewOrm().QueryTable(new(models.Tag)),
+		[]string{
+			"Id",
+			"Name",
+		},
+		map[string]string{
+			"id":         "id",
+			"name":       "name",
+			"created_at": "created_at",
+		},
+		c.getFilters(true),
+		c.getPage(),
+		c.getPerPage(),
 	)
 
-	c.Json["Tags"] = &Tags
+	c.Json["Paging"] = &Paging
 	c.RespondJson()
 }
 

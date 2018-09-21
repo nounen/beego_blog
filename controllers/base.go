@@ -1,11 +1,13 @@
 package controllers
 
 import (
+	"beego_blog/utils"
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type BaseController struct {
@@ -83,4 +85,58 @@ func (c *BaseController) UnmarshalRequestJson(RequestBody interface{}) interface
 	}
 
 	return RequestBody
+}
+
+// getPage 当前页码
+func (c *BaseController) getPage() int64 {
+	page, _ := strconv.ParseInt(c.Ctx.Input.Query("page"), 10, 64)
+
+	if page == 0 {
+		page = 1
+	}
+
+	return page
+}
+
+// getPerPage 列表
+func (c *BaseController) getPerPage() int64 {
+	perPage, _ := strconv.ParseInt(c.Ctx.Input.Query("per_page"), 10, 64)
+
+	if perPage == 0 {
+		perPage = 5
+	}
+
+	return perPage
+}
+
+// getFilters 从url里面解析出过滤条件 （分页用）
+func (c *BaseController) getFilters(defaultOrder bool) *utils.Filters {
+	filters := utils.Filters{}
+	filters.Ins = map[string][]string{}
+	filters.Betweens = map[string][]string{}
+
+	c.Ctx.Input.Bind(&filters.Orders, "order")
+	c.Ctx.Input.Bind(&filters.Equals, "equal")
+	c.Ctx.Input.Bind(&filters.Likes, "like")
+
+	betweens := map[string]string{}
+	c.Ctx.Input.Bind(&betweens, "between")
+	for key, value := range betweens {
+		filters.Betweens[key] = strings.Split(value, ",")
+	}
+
+	ins := map[string]string{}
+	c.Ctx.Input.Bind(&ins, "in")
+	for key, value := range ins {
+		filters.Ins[key] = strings.Split(value, ",")
+	}
+
+	// 默认 id 倒序
+	if defaultOrder {
+		if len(filters.Orders) == 0 {
+			filters.Orders["id"] = "desc"
+		}
+	}
+
+	return &filters
 }

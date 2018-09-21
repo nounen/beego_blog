@@ -21,6 +21,44 @@ func init() {
 	orm.RegisterModel(new(Tag))
 }
 
+// Index orm 使用探索
+func Index() interface{} {
+	tags := []orm.Params{}
+
+	fields := []string{
+		"Id",
+		"Name",
+	}
+
+	filterName := "tag"
+
+	orderId := "desc"
+
+	// 初始化查询
+	query := orm.NewOrm().
+		QueryTable(new(Tag))
+
+	// 过滤条件
+	if len(filterName) > 2 {
+		query = query.Filter("name__icontains", filterName)
+	}
+
+	// 分页： total
+	//total, _ := query.Count()
+
+	// 排序
+	if orderId == "desc" {
+		query = query.OrderBy("-id")
+	}
+
+	// 分页 和 赋值
+	query.
+		Limit(10, 0).
+		Values(&tags, fields...)
+
+	return tags
+}
+
 // AddTag insert a new Tag into database and returns
 // last inserted Id on success.
 func AddTag(m *Tag) (id int64, err error) {
