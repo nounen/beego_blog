@@ -98,28 +98,12 @@ func Paging(
 
 	// 查询
 	list := []orm.Params{}
-	query.
-		Limit(perPage, (page-1)*perPage).
-		Values(&list, fields...)
+	query.Limit(perPage, getOffset(page, perPage)).Values(&list, fields...)
 
 	// 分页计算
-	// 总页数
-	totalPage := total / perPage
-	if total%perPage > 0 {
-		totalPage = total/perPage + 1
-	}
-
-	// 上一页, 下一页
-	prevPage := int64(0)
-	nextPage := int64(0)
-
-	if totalPage > page {
-		nextPage = page + 1
-	}
-
-	if page > 1 {
-		prevPage = page - 1
-	}
+	totalPage := getTotalPage(total, perPage)
+	prevPage := getPrevPage(page)
+	nextPage := getNextPage(page, totalPage)
 
 	// 分页数据
 	Paging := Page{
@@ -133,4 +117,42 @@ func Paging(
 	}
 
 	return &Paging
+}
+
+// getOffset 分页偏移量
+func getOffset(page, perPage int64) int64 {
+	return (page - 1) * perPage
+}
+
+// getTotalPage 计算总页数
+func getTotalPage(total, perPage int64) int64 {
+	totalPage := total / perPage
+
+	if (total % perPage) > 0 {
+		totalPage = (total / perPage) + 1
+	}
+
+	return totalPage
+}
+
+// getPrevPage 上一页页码
+func getPrevPage(page int64) int64 {
+	prevPage := int64(0)
+
+	if page > 1 {
+		prevPage = page - 1
+	}
+
+	return prevPage
+}
+
+// getNextPage 下一页页码
+func getNextPage(page, totalPage int64) int64 {
+	nextPage := int64(0)
+
+	if totalPage > page {
+		nextPage = page + 1
+	}
+
+	return nextPage
 }
