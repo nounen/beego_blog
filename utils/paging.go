@@ -23,15 +23,21 @@ type Page struct {
 	List      interface{}
 }
 
+// @query orm.QuerySeter		 	// 查询初始化
+// @fields []string	 			// 查询字段
+// @fieldMap map[string]string	// 允许过滤字段与别名映射
+// @filters *Filters	 			// 过滤条件
+// @page int64			 			// 当前页码
+// @perPage int64		 			// 每页数量
 // TODO： per_page 不能超过 200， page 不能超过总页数等等处理
 // Paging 分页处理工具
 func Paging(
-	query orm.QuerySeter, // 查询初始化
-	fields []string, // 查询字段
-	fieldMap map[string]string, // 允许过滤字段与别名映射
-	filters *Filters, // 过滤条件
-	page int64, // 当前页码
-	perPage int64, // 每页数量
+	query orm.QuerySeter,
+	fields []string,
+	fieldMap map[string]string,
+	filters *Filters,
+	page int64,
+	perPage int64,
 ) *Page {
 	// fieldMap 查询字段映射： 1.没有在这里的字段不允许查询; 2. 表别名时字段别名映射
 	// TODO: 别名无效
