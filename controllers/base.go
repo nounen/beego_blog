@@ -91,7 +91,7 @@ func (c *BaseController) UnmarshalRequestJson(RequestBody interface{}) interface
 func (c *BaseController) getPage() int64 {
 	page, _ := strconv.ParseInt(c.Ctx.Input.Query("page"), 10, 64)
 
-	if page < 0 {
+	if page <= 0 {
 		page = 1
 	}
 
