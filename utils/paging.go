@@ -19,6 +19,8 @@ type Page struct {
 	Page      int64
 	PerPage   int64
 	TotalPage int64
+	PrevPage  int64
+	NextPage  int64
 	Total     int64
 	List      interface{}
 }
@@ -101,18 +103,34 @@ func Paging(
 		Values(&list, fields...)
 
 	// 分页计算
+	// 总页数
 	totalPage := total / perPage
 	if total%perPage > 0 {
 		totalPage = total/perPage + 1
 	}
 
-	paging := Page{
+	// 上一页, 下一页
+	prevPage := int64(0)
+	nextPage := int64(0)
+
+	if totalPage > page {
+		nextPage = page + 1
+	}
+
+	if page > 1 {
+		prevPage = page - 1
+	}
+
+	// 分页数据
+	Paging := Page{
 		Page:      page,
 		PerPage:   perPage,
 		TotalPage: totalPage,
+		PrevPage:  prevPage,
+		NextPage:  nextPage,
 		Total:     total,
 		List:      list,
 	}
 
-	return &paging
+	return &Paging
 }
