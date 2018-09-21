@@ -64,8 +64,10 @@ func Paging(
 	// query: between
 	for betweenKey, betweenValue := range filters.Betweens {
 		fieldAlias, ok := fieldMap[betweenKey]
+		betweenValueLen := len(betweenValue)
 
-		if ok {
+		// between 参数必须成对
+		if ok && betweenValueLen == 2 {
 			query = query.Filter(fieldAlias+"__gte", betweenValue[0])
 			query = query.Filter(fieldAlias+"__lte", betweenValue[1])
 		}
