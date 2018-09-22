@@ -99,7 +99,7 @@ func Paging(
 	}
 
 	// 查询
-	list := []orm.Params{}
+	var list []orm.Params
 	query.Limit(perPage, getOffset(page, perPage)).Values(&list, fields...)
 
 	// 分页计算

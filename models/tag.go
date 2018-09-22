@@ -7,8 +7,7 @@ import (
 )
 
 type Tag struct {
-	Id int64
-	//Id        int64     `orm:"auto"`
+	Id        int64     `orm:"auto"`
 	Name      string    `orm:"size(128)"`
 	CreatedAt time.Time `orm:"type(datetime)"`
 	DeletedAt time.Time `orm:"type(datetime)"`
