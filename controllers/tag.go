@@ -5,7 +5,6 @@ import (
 	"beego_blog/utils"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/validation"
-	"time"
 )
 
 type TagController struct {
@@ -38,10 +37,10 @@ func (c *TagController) Index() {
 
 // Store 创建数据
 func (c *TagController) Store() {
-	Tag := c.getTagFromRequest()
-	c.checkTagFromRequest(Tag)
+	tag := c.getTagFromRequest()
+	c.checkTagFromRequest(tag)
 
-	if _, err := models.AddTag(Tag); err == nil {
+	if _, err := models.AddTag(tag); err == nil {
 		c.RespondCreatedJson()
 	} else {
 		c.RespondBadJson(err)
@@ -50,8 +49,8 @@ func (c *TagController) Store() {
 
 // Show 查看数据
 func (c *TagController) Show() {
-	if Tag, err := models.GetTagById(c.getId()); err == nil {
-		c.Json["Tag"] = &Tag
+	if tag, err := models.GetTagById(c.getId()); err == nil {
+		c.Json["tag"] = &tag
 		c.RespondJson()
 	} else {
 		c.RespondBadJson(err)
@@ -82,10 +81,10 @@ func (c *TagController) Delete() {
 
 // getTagFromRequest 获取表单提交数据
 func (c *TagController) getTagFromRequest() *models.Tag {
-	Tag := &models.Tag{}
-	c.UnmarshalRequestJson(Tag)
-	Tag.CreatedAt = time.Now()
-	return Tag
+	tag := &models.Tag{}
+	tag.CreatedAt = utils.GetNow()
+	c.UnmarshalRequestJson(tag)
+	return tag
 }
 
 // checkTagFromRequest 表单验证

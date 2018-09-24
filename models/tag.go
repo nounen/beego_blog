@@ -7,10 +7,10 @@ import (
 )
 
 type Tag struct {
-	Id        int64     `orm:"auto" json:"id"`
-	Name      string    `orm:"size(128)" json:"name"`
-	CreatedAt time.Time `orm:"type(datetime)" json:"created_at"`
-	DeletedAt time.Time `orm:"type(datetime)" json:"deleted_at"`
+	Id        int64      `orm:"auto" json:"id"`
+	Name      string     `orm:"size(128)" json:"name"`
+	CreatedAt *time.Time `orm:"type(datetime)" json:"created_at"`
+	DeletedAt *time.Time `orm:"type(datetime)" json:"deleted_at"`
 }
 
 func init() {
@@ -30,7 +30,7 @@ func AddTag(m *Tag) (id int64, err error) {
 func GetTagById(id int64) (v *Tag, err error) {
 	o := orm.NewOrm()
 	v = &Tag{Id: id}
-	if err = o.QueryTable(new(Tag)).Filter("Id", id).RelatedSel().One(v); err == nil {
+	if err = o.QueryTable(new(Tag)).Filter("Id", id).One(v); err == nil {
 		return v, nil
 	}
 	return nil, err
