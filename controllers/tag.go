@@ -49,7 +49,15 @@ func (c *TagController) Store() {
 
 // Show 查看数据
 func (c *TagController) Show() {
-	if tag, err := models.GetTagById(c.getId()); err == nil {
+	fields := []string{
+		"id",
+		"name",
+		"created_at",
+	}
+
+	tag, err := utils.GetById(c.getTagQuery(), fields, c.getId())
+
+	if err == nil {
 		c.Json["tag"] = &tag
 		c.RespondJson()
 	} else {
@@ -94,4 +102,9 @@ func (c *TagController) checkTagFromRequest(Tag *models.Tag) {
 	valid.MaxSize(Tag.Name, 12, "Name")
 
 	c.RespondIfBadEntityJson(&valid)
+}
+
+// getTagQuery
+func (c *TagController) getTagQuery() orm.QuerySeter {
+	return orm.NewOrm().QueryTable(new(models.Tag))
 }
