@@ -5,8 +5,7 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
-// GetTagById retrieves Tag by Id. Returns error if
-// Id doesn't exist
+// GetById 详情数据查询
 func GetById(
 	query orm.QuerySeter,
 	fields []string,
