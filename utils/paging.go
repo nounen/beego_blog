@@ -16,13 +16,13 @@ type Filters struct {
 
 // Paging 分页数据结构
 type Page struct {
-	Page      int64       `json:"page"`
-	PerPage   int64       `json:"per_page"`
-	TotalPage int64       `json:"total_page"`
-	PrevPage  int64       `json:"prev_page"`
-	NextPage  int64       `json:"next_page"`
-	Total     int64       `json:"total"`
-	List      interface{} `json:"list"`
+	Page      int64        `json:"page"`
+	PerPage   int64        `json:"per_page"`
+	TotalPage int64        `json:"total_page"`
+	PrevPage  int64        `json:"prev_page"`
+	NextPage  int64        `json:"next_page"`
+	Total     int64        `json:"total"`
+	List      []orm.Params `json:"list"`
 }
 
 // @query orm.QuerySeter		 	// 查询初始化
