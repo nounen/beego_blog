@@ -16,10 +16,10 @@ func (c *TagController) Index() {
 	tags := utils.Paging(
 		orm.NewOrm().QueryTable(new(models.Tag)),
 		[]string{
-			"Id",
-			"Name",
-			"CreatedAt",
-			"DeletedAt",
+			"id",
+			"name",
+			"created_at",
+			"deleted_at",
 		},
 		map[string]string{
 			"id":         "id",
@@ -59,11 +59,11 @@ func (c *TagController) Show() {
 
 // Update 更新数据
 func (c *TagController) Update() {
-	Tag := c.getTagFromRequest()
-	c.checkTagFromRequest(Tag)
-	Tag.Id = c.getId()
+	tag := c.getTagFromRequest()
+	tag.Id = c.getId()
+	c.checkTagFromRequest(tag)
 
-	if err := models.UpdateTagById(Tag); err == nil {
+	if err := models.UpdateTagById(tag); err == nil {
 		c.RespondNoContentJson()
 	} else {
 		c.RespondBadJson(err)
