@@ -14,11 +14,13 @@ type TagController struct {
 
 // Index 列表数据
 func (c *TagController) Index() {
-	Tags := utils.Paging(
+	tags := utils.Paging(
 		orm.NewOrm().QueryTable(new(models.Tag)),
 		[]string{
 			"Id",
 			"Name",
+			"CreatedAt",
+			"DeletedAt",
 		},
 		map[string]string{
 			"id":         "id",
@@ -30,7 +32,7 @@ func (c *TagController) Index() {
 		c.getPerPage(),
 	)
 
-	c.Json["Tags"] = &Tags
+	c.Json["tags"] = &tags
 	c.RespondJson()
 }
 

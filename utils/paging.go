@@ -16,13 +16,13 @@ type Filters struct {
 
 // Paging 分页数据结构
 type Page struct {
-	Page      int64
-	PerPage   int64
-	TotalPage int64
-	PrevPage  int64
-	NextPage  int64
-	Total     int64
-	List      interface{}
+	Page      int64       `json:"page"`
+	PerPage   int64       `json:"per_page"`
+	TotalPage int64       `json:"total_page"`
+	PrevPage  int64       `json:"prev_page"`
+	NextPage  int64       `json:"next_page"`
+	Total     int64       `json:"total"`
+	List      interface{} `json:"list"`
 }
 
 // @query orm.QuerySeter		 	// 查询初始化
@@ -100,7 +100,21 @@ func Paging(
 
 	// 查询
 	var list []orm.Params
-	query.Limit(perPage, getOffset(page, perPage)).Values(&list, fields...)
+	query.
+		Limit(perPage, getOffset(page, perPage)).
+		Values(&list, fields...)
+
+	// 查询结果转 key 转 小写下划线
+	var pageList []orm.Params
+	for _, listValue := range list {
+		m := map[string]interface{}{}
+
+		for k, v := range listValue {
+			m[snakeString(k)] = v
+		}
+
+		pageList = append(pageList, m)
+	}
 
 	// 分页计算
 	totalPage := getTotalPage(total, perPage)
@@ -115,7 +129,7 @@ func Paging(
 		PrevPage:  prevPage,
 		NextPage:  nextPage,
 		Total:     total,
-		List:      list,
+		List:      pageList,
 	}
 
 	return &Paging

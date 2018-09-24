@@ -7,10 +7,10 @@ import (
 )
 
 type Tag struct {
-	Id        int64     `orm:"auto"`
-	Name      string    `orm:"size(128)"`
-	CreatedAt time.Time `orm:"type(datetime)"`
-	DeletedAt time.Time `orm:"type(datetime)"`
+	Id        int64     `orm:"auto" json:"id"`
+	Name      string    `orm:"size(128)" json:"name"`
+	CreatedAt time.Time `orm:"type(datetime)" json:"created_at"`
+	DeletedAt time.Time `orm:"type(datetime)" json:"deleted_at"`
 }
 
 func init() {
