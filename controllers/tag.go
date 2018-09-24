@@ -13,19 +13,23 @@ type TagController struct {
 
 // Index 列表数据
 func (c *TagController) Index() {
+	fields := []string{
+		"id",
+		"name",
+		"created_at",
+		"deleted_at",
+	}
+
+	filtersMap := map[string]string{
+		"id":         "id",
+		"name":       "name",
+		"created_at": "created_at",
+	}
+
 	tags := utils.Paging(
-		orm.NewOrm().QueryTable(new(models.Tag)),
-		[]string{
-			"id",
-			"name",
-			"created_at",
-			"deleted_at",
-		},
-		map[string]string{
-			"id":         "id",
-			"name":       "name",
-			"created_at": "created_at",
-		},
+		c.getTagQuery(),
+		fields,
+		filtersMap,
 		c.getFilters(true),
 		c.getPage(),
 		c.getPerPage(),

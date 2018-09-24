@@ -36,7 +36,7 @@ type Page struct {
 func Paging(
 	query orm.QuerySeter,
 	fields []string,
-	fieldMap map[string]string,
+	filtersMap map[string]string,
 	filters *Filters,
 	page int64,
 	perPage int64,
@@ -45,7 +45,7 @@ func Paging(
 	// TODO: 别名无效
 	// query: =
 	for equalKey, equalValue := range filters.Equals {
-		fieldAlias, ok := fieldMap[equalKey]
+		fieldAlias, ok := filtersMap[equalKey]
 
 		if ok {
 			query = query.Filter(fieldAlias, equalValue)
@@ -54,7 +54,7 @@ func Paging(
 
 	// query: like
 	for likeKey, likeValue := range filters.Likes {
-		fieldAlias, ok := fieldMap[likeKey]
+		fieldAlias, ok := filtersMap[likeKey]
 
 		if ok {
 			query = query.Filter(fieldAlias+"__icontains", likeValue)
@@ -63,7 +63,7 @@ func Paging(
 
 	// query: between
 	for betweenKey, betweenValue := range filters.Betweens {
-		fieldAlias, ok := fieldMap[betweenKey]
+		fieldAlias, ok := filtersMap[betweenKey]
 		betweenValueLen := len(betweenValue)
 
 		// between 参数必须成对
@@ -75,7 +75,7 @@ func Paging(
 
 	// query: in
 	for inKey, inValue := range filters.Ins {
-		fieldAlias, ok := fieldMap[inKey]
+		fieldAlias, ok := filtersMap[inKey]
 
 		if ok {
 			query = query.Filter(fieldAlias+"__in", inValue)
@@ -87,7 +87,7 @@ func Paging(
 
 	// query: order by
 	for orderKey, orderValue := range filters.Orders {
-		fieldAlias, ok := fieldMap[orderKey]
+		fieldAlias, ok := filtersMap[orderKey]
 
 		if ok {
 			if strings.ToLower(orderValue) == "desc" {
