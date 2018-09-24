@@ -7,11 +7,14 @@ import (
 )
 
 type Article struct {
-	Id int64
-	//Id        int64     `orm:"auto"`
-	Name      string    `orm:"size(128)"`
-	CreatedAt time.Time `orm:"type(datetime)"`
-	DeletedAt time.Time `orm:"type(datetime)"`
+	Id        int64  `orm:"auto"`
+	Cover     string `orm:"size(255)"`
+	Title     string `orm:"size(255)"`
+	Content   string `orm:"type(longtext)"`
+	State     int64
+	UserId    int64
+	CreatedAt *time.Time `orm:"type(datetime)"`
+	DeletedAt *time.Time `orm:"type(datetime)"`
 }
 
 func init() {

@@ -5,7 +5,6 @@ import (
 	"beego_blog/utils"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/validation"
-	"time"
 )
 
 type ArticleController struct {
@@ -14,23 +13,32 @@ type ArticleController struct {
 
 // Index 列表数据
 func (c *ArticleController) Index() {
-	Articles := utils.Paging(
-		orm.NewOrm().QueryTable(new(models.Article)),
-		[]string{
-			"Id",
-			"Name",
-		},
-		map[string]string{
-			"id":         "id",
-			"name":       "name",
-			"created_at": "created_at",
-		},
+	fields := []string{
+		"id",
+		"title",
+		"content",
+		"cover",
+		"state",
+		"created_at",
+		"user_id",
+	}
+
+	filtersMap := map[string]string{
+		"id":         "id",
+		"title":      "title",
+		"created_at": "created_at",
+	}
+
+	articles := utils.Paging(
+		c.getArticleQuery(),
+		fields,
+		filtersMap,
 		c.getFilters(true),
 		c.getPage(),
 		c.getPerPage(),
 	)
 
-	c.Json["Articles"] = &Articles
+	c.Json["articles"] = &articles
 	c.RespondJson()
 }
 
@@ -81,16 +89,21 @@ func (c *ArticleController) Delete() {
 // getArticleFromRequest 获取表单提交数据
 func (c *ArticleController) getArticleFromRequest() *models.Article {
 	Article := &models.Article{}
+	Article.CreatedAt = utils.GetNow()
 	c.UnmarshalRequestJson(Article)
-	Article.CreatedAt = time.Now()
 	return Article
 }
 
 // checkArticleFromRequest 表单验证
 func (c *ArticleController) checkArticleFromRequest(Article *models.Article) {
 	valid := validation.Validation{}
-	valid.Required(Article.Name, "Name")
-	valid.MaxSize(Article.Name, 12, "Name")
+	//valid.Required(Article.Title, "Title")
+	//valid.MaxSize(Article.Title, 12, "Title")
 
 	c.RespondIfBadEntityJson(&valid)
+}
+
+// getArticleQuery
+func (c *ArticleController) getArticleQuery() orm.QuerySeter {
+	return orm.NewOrm().QueryTable(new(models.Article))
 }
