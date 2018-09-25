@@ -10,7 +10,7 @@ func GetById(
 	query orm.QuerySeter,
 	fields []string,
 	id int64,
-) (item interface{}, err error) {
+) (item map[string]interface{}, err error) {
 	var list []orm.Params
 
 	count, err := query.
