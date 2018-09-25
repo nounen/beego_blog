@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"beego_blog/models"
+	"beego_blog/services"
 	"beego_blog/utils"
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/validation"
 )
@@ -60,11 +62,20 @@ func (c *ArticleController) Show() {
 		"id",
 		"title",
 		"created_at",
+		"user_id",
 	}
 
 	article, err := utils.GetById(c.getArticleQuery(), fields, c.getId())
 
+	beego.Debug(article["user_id"])
+
 	if err == nil {
+		article["user"], _ = utils.GetById(
+			services.GetUserQuery(),
+			[]string{"id", "name"},
+			article["user_id"].(int64),
+		)
+
 		c.Json["article"] = &article
 		c.RespondJson()
 	} else {
