@@ -7,14 +7,14 @@ import (
 )
 
 type Article struct {
-	Id        int64  `orm:"auto"`
-	Cover     string `orm:"size(255)"`
-	Title     string `orm:"size(255)"`
-	Content   string `orm:"type(longtext)"`
-	State     int64
-	UserId    int64
-	CreatedAt *time.Time `orm:"type(datetime)"`
-	DeletedAt *time.Time `orm:"type(datetime)"`
+	Id        int64      `orm:"auto" json:"id"`
+	Cover     string     `orm:"size(255)" json:"cover"`
+	Title     string     `orm:"size(255)" json:"title"`
+	Content   string     `orm:"type(longtext)" json:"content"`
+	State     int64      `json:"state"`
+	UserId    int64      `json:"user_id"`
+	CreatedAt *time.Time `orm:"type(datetime)" json:"created_at"`
+	DeletedAt *time.Time `orm:"type(datetime)" json:"deleted_at"`
 }
 
 func init() {
