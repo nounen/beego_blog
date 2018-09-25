@@ -76,6 +76,8 @@ func (c *ArticleController) Show() {
 			article["user_id"].(int64),
 		)
 
+		article["tags"] = services.GetTagsByArticleId(article["id"].(int64))
+
 		c.Json["article"] = &article
 		c.RespondJson()
 	} else {
