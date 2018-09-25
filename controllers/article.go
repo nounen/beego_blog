@@ -56,7 +56,15 @@ func (c *ArticleController) Store() {
 
 // Show 查看数据
 func (c *ArticleController) Show() {
-	if article, err := models.GetArticleById(c.getId()); err == nil {
+	fields := []string{
+		"id",
+		"title",
+		"created_at",
+	}
+
+	article, err := utils.GetById(c.getArticleQuery(), fields, c.getId())
+
+	if err == nil {
 		c.Json["article"] = &article
 		c.RespondJson()
 	} else {
