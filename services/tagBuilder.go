@@ -8,8 +8,8 @@ import (
 // GetTagsByArticleId 获取文章 tags
 func GetTagsByArticleId(articleId int64) []orm.Params {
 	fields := []string{
-		"tag.id",
-		"tag.name",
+		"tag.id AS id",
+		"tag.name AS name",
 	}
 
 	queryString := utils.GetQueryBuilder().
@@ -28,4 +28,25 @@ func GetTagsByArticleId(articleId int64) []orm.Params {
 		Values(&list)
 
 	return list
+}
+
+// GetTagIdsByArticleId 获取文章 tagIds
+func GetTagIdsByArticleId(articleId int64) []int {
+	fields := []string{
+		"tag_id AS id",
+	}
+
+	queryString := utils.GetQueryBuilder().
+		Select(fields...).
+		From("article_tag").
+		Where("article_id = ?").
+		String()
+
+	// 执行SQL语句
+	var ids []int
+	orm.NewOrm().
+		Raw(queryString, articleId).
+		QueryRows(&ids)
+
+	return ids
 }
