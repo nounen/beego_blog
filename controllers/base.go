@@ -12,7 +12,8 @@ import (
 
 type BaseController struct {
 	beego.Controller
-	Json map[string]interface{}
+	Json        map[string]interface{}
+	RequestData map[string]interface{}
 }
 
 // Prepare 优先执行于其他方法
@@ -85,6 +86,24 @@ func (c *BaseController) UnmarshalRequestJson(RequestBody interface{}) interface
 	}
 
 	return RequestBody
+}
+
+// UnmarshalRequestData 解码json请求数据
+func (c *BaseController) UnmarshalRequestData() {
+	var requestData map[string]interface{}
+
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &requestData); err != nil {
+		c.RespondBadJson(err)
+	}
+
+	c.RequestData = requestData
+}
+
+// UnmarshalRequestData 解码json请求数据
+func (c *BaseController) UnmarshalRequest(requestData interface{}) {
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &requestData); err != nil {
+		c.RespondBadJson(err)
+	}
 }
 
 // getPage 当前页码

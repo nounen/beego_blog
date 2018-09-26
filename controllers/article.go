@@ -46,10 +46,13 @@ func (c *ArticleController) Index() {
 
 // Store 创建数据
 func (c *ArticleController) Store() {
-	Article := c.getArticleFromRequest()
-	c.checkArticleFromRequest(Article)
+	article := c.getArticleFromRequest()
+	article.UserId = 1
+	c.checkArticleFromRequest(article)
 
-	if _, err := models.AddArticle(Article); err == nil {
+	if _, err := models.AddArticle(article); err == nil {
+		//beego.Debug(id)
+		//services.InsertMultiArticleTag(id, tagIds)
 		c.RespondCreatedJson()
 	} else {
 		c.RespondBadJson(err)
@@ -108,17 +111,26 @@ func (c *ArticleController) Delete() {
 
 // getArticleFromRequest 获取表单提交数据
 func (c *ArticleController) getArticleFromRequest() *models.Article {
-	Article := &models.Article{}
-	Article.CreatedAt = utils.GetNow()
-	c.UnmarshalRequestJson(Article)
-	return Article
+	article := &models.Article{}
+	article.CreatedAt = utils.GetNow()
+	c.UnmarshalRequestJson(article)
+	return article
 }
 
 // checkArticleFromRequest 表单验证
 func (c *ArticleController) checkArticleFromRequest(Article *models.Article) {
 	valid := validation.Validation{}
-	//valid.Required(Article.Title, "Title")
-	//valid.MaxSize(Article.Title, 12, "Title")
+
+	valid.Required(Article.Cover, "cover")
+	valid.MaxSize(Article.Cover, 255, "cover")
+
+	valid.Required(Article.State, "state")
+	valid.Range(Article.State, 1, 3, "state")
+
+	valid.Required(Article.Title, "title")
+	valid.MaxSize(Article.Title, 200, "title")
+
+	valid.Required(Article.Content, "content")
 
 	c.RespondIfBadEntityJson(&valid)
 }
