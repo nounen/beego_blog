@@ -70,14 +70,12 @@ func (c *ArticleController) Show() {
 	beego.Debug(article["user_id"])
 
 	if err == nil {
-		article["user"], _ = utils.GetById(
-			services.GetUserQuery(),
-			[]string{"id", "name"},
-			article["user_id"].(int64),
-		)
+		userId := article["user_id"].(int64)
+		articleId := article["id"].(int64)
 
-		article["tags"] = services.GetTagsByArticleId(article["id"].(int64))
-		article["tag_ids"] = services.GetTagIdsByArticleId(article["id"].(int64))
+		article["user"], _ = utils.GetById(services.GetUserQuery(), []string{"id", "name"}, userId)
+		article["tags"] = services.GetTagsByArticleId(articleId)
+		article["tag_ids"] = services.GetTagIdsByArticleId(articleId)
 
 		c.Json["article"] = &article
 		c.RespondJson()
