@@ -11,7 +11,7 @@
  Target Server Version : 50723
  File Encoding         : 65001
 
- Date: 24/09/2018 22:36:04
+ Date: 26/09/2018 16:10:57
 */
 
 SET NAMES utf8mb4;
@@ -31,28 +31,31 @@ CREATE TABLE `article`  (
   `created_at` datetime(0) NULL DEFAULT NULL,
   `deleted_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of article
 -- ----------------------------
 INSERT INTO `article` VALUES (1, 'https://odu38kv7q.qnssl.com/nice.png', 'title1', 'content1', 1, 1, '2018-09-22 10:01:46', NULL);
 INSERT INTO `article` VALUES (2, 'https://odu38kv7q.qnssl.com/nice.png', 'title2', 'content', 2, 1, '2018-09-22 10:04:22', NULL);
+INSERT INTO `article` VALUES (3, 'https://odu38kv7q.qnssl.com/nice.png', 'title1', '<noscript>请启用您浏览器的 JavaScript 选项！</noscript>', 1, 1, '2018-09-26 16:08:33', NULL);
 
 -- ----------------------------
 -- Table structure for article_tag
 -- ----------------------------
 DROP TABLE IF EXISTS `article_tag`;
 CREATE TABLE `article_tag`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `article_id` int(11) NOT NULL,
-  `tag_id` int(11) NOT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+  `tag_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of article_tag
 -- ----------------------------
-INSERT INTO `article_tag` VALUES (1, 1);
-INSERT INTO `article_tag` VALUES (1, 2);
+INSERT INTO `article_tag` VALUES (1, 1, 1);
+INSERT INTO `article_tag` VALUES (2, 1, 2);
 
 -- ----------------------------
 -- Table structure for comment
