@@ -2,11 +2,10 @@ package controllers
 
 import (
 	"beego_blog/models"
+	"beego_blog/services"
 	"beego_blog/utils"
-	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/validation"
-	"time"
 )
 
 type TagController struct {
@@ -61,43 +60,24 @@ func (c *TagController) Show() {
 		"created_at",
 	}
 
-	// 查询构造转 struct OR []struct
-	queryString := utils.GetQueryBuilder().
-		Select(fields...).
-		From("tag").
-		Where("id > ?").
-		String()
+	var tag services.TagShow
+	qb := utils.GetQueryBuilder().Select(fields...).From("tag").Where("id = ?")
+	err := utils.GetFirst(qb, &tag, c.getId())
 
-	type TagShow struct {
-		Id        int64     `json:"id"`
-		Name      string    `json:"name"`
-		CreatedAt time.Time `json:"created_at"`
-	}
-
-	tag := new(TagShow)
-	orm.NewOrm().
-		Raw(queryString, c.getId()).
-		QueryRow(&tag)
-
-	var tags []TagShow
-	orm.NewOrm().
-		Raw(queryString, c.getId()).
-		QueryRows(&tags)
-
+	//var tags []TagShow
+	//orm.NewOrm().
+	//	Raw(queryString, c.getId()).
+	//	QueryRows(&tags)
 	//tag, err := utils.GetById(c.getTagQuery(), fields, c.getId())
-	beego.Debug(tag)
-	beego.Debug(tags)
+	//beego.Debug(tags)
+	//c.Json["tags"] = &tags
 
-	c.Json["tag"] = &tag
-	c.Json["tags"] = &tags
-	c.RespondJson()
-
-	//if err == nil {
-	//	c.Json["tag"] = &tag
-	//	c.RespondJson()
-	//} else {
-	//	c.RespondBadJson(err)
-	//}
+	if err == nil {
+		c.Json["tag"] = &tag
+		c.RespondJson()
+	} else {
+		c.RespondBadJson(err)
+	}
 }
 
 // Update 更新数据
