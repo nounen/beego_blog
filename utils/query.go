@@ -32,9 +32,3 @@ func GetById(
 
 	return m, err
 }
-
-// GetBuilder 获取 QueryBuilder 对象
-func GetQueryBuilder() (qb orm.QueryBuilder) {
-	queryBuilder, _ := orm.NewQueryBuilder("mysql")
-	return queryBuilder
-}
