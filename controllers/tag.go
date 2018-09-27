@@ -3,8 +3,10 @@ package controllers
 import (
 	"beego_blog/models"
 	"beego_blog/utils"
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/validation"
+	"time"
 )
 
 type TagController struct {
@@ -54,19 +56,48 @@ func (c *TagController) Store() {
 // Show 查看数据
 func (c *TagController) Show() {
 	fields := []string{
-		"id",
-		"name",
+		"tag.id AS id",
+		"tag.name AS name",
 		"created_at",
 	}
 
-	tag, err := utils.GetById(c.getTagQuery(), fields, c.getId())
+	// 查询构造转 struct OR []struct
+	queryString := utils.GetQueryBuilder().
+		Select(fields...).
+		From("tag").
+		Where("id > ?").
+		String()
 
-	if err == nil {
-		c.Json["tag"] = &tag
-		c.RespondJson()
-	} else {
-		c.RespondBadJson(err)
+	type TagShow struct {
+		Id        int64     `json:"id"`
+		Name      string    `json:"name"`
+		CreatedAt time.Time `json:"created_at"`
 	}
+
+	tag := new(TagShow)
+	orm.NewOrm().
+		Raw(queryString, c.getId()).
+		QueryRow(&tag)
+
+	var tags []TagShow
+	orm.NewOrm().
+		Raw(queryString, c.getId()).
+		QueryRows(&tags)
+
+	//tag, err := utils.GetById(c.getTagQuery(), fields, c.getId())
+	beego.Debug(tag)
+	beego.Debug(tags)
+
+	c.Json["tag"] = &tag
+	c.Json["tags"] = &tags
+	c.RespondJson()
+
+	//if err == nil {
+	//	c.Json["tag"] = &tag
+	//	c.RespondJson()
+	//} else {
+	//	c.RespondBadJson(err)
+	//}
 }
 
 // Update 更新数据
