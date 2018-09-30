@@ -1,4 +1,5 @@
 .idea/
 beego_blog
+beego_blog.exe
 conf/app.conf
 swagger/
