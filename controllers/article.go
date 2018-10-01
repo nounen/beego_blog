@@ -4,9 +4,11 @@ import (
 	"beego_blog/models"
 	"beego_blog/services"
 	"beego_blog/utils"
+	"errors"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/validation"
+	"fmt"
 )
 
 type ArticleController struct {
@@ -50,9 +52,11 @@ func (c *ArticleController) Store() {
 	article.UserId = 1
 	c.checkArticleFromRequest(article)
 
-	if _, err := models.AddArticle(article); err == nil {
-		//beego.Debug(id)
-		//services.InsertMultiArticleTag(id, tagIds)
+	tagIds := c.getTagIdsFromRequest()
+	c.checkTagIds(tagIds)
+
+	if articleId, err := models.AddArticle(article); err == nil {
+		services.InsertMultiArticleTag(articleId, tagIds)
 		c.RespondCreatedJson()
 	} else {
 		c.RespondBadJson(err)
@@ -109,6 +113,13 @@ func (c *ArticleController) Delete() {
 	}
 }
 
+// getTagIdsFromRequest
+func (c *ArticleController) getTagIdsFromRequest() []int64 {
+	ti := &services.TagIds{}
+	c.UnmarshalRequestJson(&ti)
+	return ti.TagIds
+}
+
 // getArticleFromRequest 获取表单提交数据
 func (c *ArticleController) getArticleFromRequest() *models.Article {
 	article := &models.Article{}
@@ -133,6 +144,18 @@ func (c *ArticleController) checkArticleFromRequest(Article *models.Article) {
 	valid.Required(Article.Content, "content")
 
 	c.RespondIfBadEntityJson(&valid)
+}
+
+// checkTagIds
+func (c *ArticleController) checkTagIds(tagIds []int64) {
+	for _, tagId := range tagIds {
+		_, err := models.GetTagById(tagId)
+
+		if err != nil {
+			msg := fmt.Sprintf("标签ID %d 不存在", tagId)
+			c.RespondBadJson(errors.New(msg))
+		}
+	}
 }
 
 // getArticleQuery
