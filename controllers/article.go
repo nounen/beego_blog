@@ -5,10 +5,9 @@ import (
 	"beego_blog/services"
 	"beego_blog/utils"
 	"errors"
-	"github.com/astaxie/beego"
+	"fmt"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/validation"
-	"fmt"
 )
 
 type ArticleController struct {
@@ -73,8 +72,6 @@ func (c *ArticleController) Show() {
 	}
 
 	article, err := utils.GetById(c.getArticleQuery(), fields, c.getId())
-
-	beego.Debug(article["user_id"])
 
 	if err == nil {
 		userId := article["user_id"].(int64)
