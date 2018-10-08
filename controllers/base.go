@@ -88,7 +88,7 @@ func (c *BaseController) RespondByTransaction(orm orm.Ormer, err error, isLast b
 		c.RespondBadJson(err)
 	}
 
-	// 事务成功且是最后一条数据操作
+	// 事务成功且是最后一条数据操作: 提交事务，响应成功
 	if err == nil && isLast == true {
 		orm.Commit()
 		c.RespondCreatedJson()
