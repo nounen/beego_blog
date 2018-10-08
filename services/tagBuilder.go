@@ -6,7 +6,7 @@ import (
 )
 
 // GetTagsByArticleId 获取文章 tags
-func GetTagsByArticleId(articleId int64) []orm.Params {
+func GetTagsByArticleId(articleId int64) []ArticleTag {
 	fields := []string{
 		"tag.id AS id",
 		"tag.name AS name",
@@ -21,13 +21,12 @@ func GetTagsByArticleId(articleId int64) []orm.Params {
 		String()
 
 	// 执行SQL语句
-	// TODO: 查询结果都是 【字符串】 如何处理？
-	var list []orm.Params
+	var tags []ArticleTag
 	orm.NewOrm().
 		Raw(queryString, articleId).
-		Values(&list)
+		QueryRows(&tags)
 
-	return list
+	return tags
 }
 
 // GetTagIdsByArticleId 获取文章 tagIds
