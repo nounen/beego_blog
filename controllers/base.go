@@ -34,6 +34,7 @@ func (c *BaseController) getId() int64 {
 func (c *BaseController) RespondJson() {
 	c.Data["json"] = &c.Json
 	c.ServeJSON()
+	c.StopRun() // 防止出错后继续执行后面的代码
 }
 
 // RespondBadJson 错误响应
@@ -42,7 +43,6 @@ func (c *BaseController) RespondBadJson(err error) {
 	c.Json["message"] = "操作失败"
 	c.Json["error"] = err.Error()
 	c.RespondJson()
-	c.StopRun() // 防止出错后继续执行后面的代码
 }
 
 // RespondBadEntityJson 如果表单验证失败响应
@@ -61,7 +61,6 @@ func (c *BaseController) RespondIfBadEntityJson(valid *validation.Validation) {
 		c.Json["message"] = message
 		c.Json["messages"] = messages
 		c.RespondJson()
-		c.StopRun()
 	}
 }
 
