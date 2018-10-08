@@ -79,6 +79,13 @@ func (c *BaseController) RespondNoContentJson() {
 	c.RespondJson()
 }
 
+// BeginTransaction 事务开启
+func (c *BaseController) BeginTransaction() orm.Ormer {
+	o := orm.NewOrm()
+	o.Begin()
+	return o
+}
+
 // @isLast 是否为最后一个sql操作
 // RespondByTransaction 事务响应
 func (c *BaseController) RespondByTransaction(orm orm.Ormer, err error, isLast bool) {
@@ -144,6 +151,7 @@ func (c *BaseController) getPerPage() int64 {
 	return perPage
 }
 
+// @defaultOrder 使用默认排序（id 倒序）
 // getFilters 从url里面解析出过滤条件 （分页用）
 func (c *BaseController) getFilters(defaultOrder bool) *utils.Filters {
 	filters := utils.Filters{}

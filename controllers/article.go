@@ -6,7 +6,6 @@ import (
 	"beego_blog/utils"
 	"errors"
 	"fmt"
-	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/validation"
 )
 
@@ -33,7 +32,7 @@ func (c *ArticleController) Index() {
 	}
 
 	articles := utils.Paging(
-		c.getArticleQuery(),
+		services.GetArticleQuery(),
 		fields,
 		filtersMap,
 		c.getFilters(true),
@@ -48,15 +47,14 @@ func (c *ArticleController) Index() {
 // Store 创建数据
 func (c *ArticleController) Store() {
 	// 数据解析 验证
-	article := c.getArticleFromRequest()
-	c.checkArticleFromRequest(article)
+	article := c.getArticle()
+	c.checkArticle(article)
 
-	tagIds := c.getTagIdsFromRequest()
+	tagIds := c.getTagIds()
 	c.checkTagIds(tagIds)
 
 	// 事务
-	orm := orm.NewOrm()
-	orm.Begin()
+	orm := c.BeginTransaction()
 
 	// 文章数据
 	articleId, err1 := orm.Insert(article)
@@ -76,7 +74,7 @@ func (c *ArticleController) Show() {
 		"user_id",
 	}
 
-	article, err := utils.GetById(c.getArticleQuery(), fields, c.getId())
+	article, err := utils.GetById(services.GetArticleQuery(), fields, c.getId())
 
 	if err == nil {
 		userId := article["user_id"].(int64)
@@ -95,8 +93,8 @@ func (c *ArticleController) Show() {
 
 // Update 更新数据
 func (c *ArticleController) Update() {
-	Article := c.getArticleFromRequest()
-	c.checkArticleFromRequest(Article)
+	Article := c.getArticle()
+	c.checkArticle(Article)
 	Article.Id = c.getId()
 
 	if err := models.UpdateArticleById(Article); err == nil {
@@ -115,30 +113,30 @@ func (c *ArticleController) Delete() {
 	}
 }
 
-// getTagIdsFromRequest
-func (c *ArticleController) getTagIdsFromRequest() []int64 {
+// getTagIds
+func (c *ArticleController) getTagIds() []int64 {
 	ti := &services.TagIds{}
 	c.UnmarshalRequestJson(&ti)
 	return ti.TagIds
 }
 
-// getArticleFromRequest 获取表单提交数据
-func (c *ArticleController) getArticleFromRequest() *models.Article {
+// getArticle 获取表单提交数据
+func (c *ArticleController) getArticle() *models.Article {
 	article := &models.Article{}
 	article.CreatedAt = utils.GetNow()
 	c.UnmarshalRequestJson(article)
 	return article
 }
 
-// checkArticleFromRequest 表单验证
-func (c *ArticleController) checkArticleFromRequest(Article *models.Article) {
+// checkArticle 表单验证
+func (c *ArticleController) checkArticle(Article *models.Article) {
 	valid := validation.Validation{}
 
 	valid.Required(Article.Cover, "cover")
 	valid.MaxSize(Article.Cover, 255, "cover")
 
 	valid.Required(Article.State, "state")
-	valid.Range(Article.State, 1, 3, "state")
+	//valid.Range(Article.State, 1, 3, "state")
 
 	valid.Required(Article.Title, "title")
 	valid.MaxSize(Article.Title, 200, "title")
@@ -158,9 +156,4 @@ func (c *ArticleController) checkTagIds(tagIds []int64) {
 			c.RespondBadJson(errors.New(msg))
 		}
 	}
-}
-
-// getArticleQuery
-func (c *ArticleController) getArticleQuery() orm.QuerySeter {
-	return orm.NewOrm().QueryTable(new(models.Article))
 }
