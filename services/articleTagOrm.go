@@ -27,3 +27,10 @@ func InsertMultiArticleTag(o orm.Ormer, articleId int64, tagIds []int64) error {
 
 	return err
 }
+
+// DeleteByArticleId 根据文章删除关联标签
+func DeleteByArticleId(o orm.Ormer, articleId int64) {
+	o.QueryTable(new(models.ArticleTag)).
+		Filter("article_id", articleId).
+		Delete()
+}

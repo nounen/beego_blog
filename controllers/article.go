@@ -58,11 +58,11 @@ func (c *ArticleController) Store() {
 
 	// 文章数据
 	articleId, err1 := orm.Insert(article)
-	c.RespondByTransaction(orm, err1, false)
+	c.RespondTransactionCreated(orm, err1, false)
 
 	// 标签关联
 	err2 := services.InsertMultiArticleTag(orm, articleId, tagIds)
-	c.RespondByTransaction(orm, err2, true)
+	c.RespondTransactionCreated(orm, err2, true)
 }
 
 // Show 查看数据
@@ -93,15 +93,28 @@ func (c *ArticleController) Show() {
 
 // Update 更新数据
 func (c *ArticleController) Update() {
+	// 数据获取 验证
 	article := c.getArticle()
-	article.Id = c.getId()
 	c.checkArticle(article)
 
-	if err := models.UpdateArticleById(article); err == nil {
-		c.RespondNoContentJson()
-	} else {
-		c.RespondBadJson(err)
-	}
+	tagIds := c.getTagIds()
+	c.checkTagIds(tagIds)
+
+	article.Id = c.getId()
+
+	// 事务
+	orm := c.BeginTransaction()
+
+	// 更新文章
+	err1 := models.UpdateArticleById(orm, article)
+	c.RespondTransactionNoContent(orm, err1, false)
+
+	// 删除标签关联
+	services.DeleteByArticleId(orm, article.Id)
+
+	// 新增标签关联
+	err2 := services.InsertMultiArticleTag(orm, article.Id, tagIds)
+	c.RespondTransactionNoContent(orm, err2, true)
 }
 
 // Delete 删除数据

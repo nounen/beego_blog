@@ -87,8 +87,8 @@ func (c *BaseController) BeginTransaction() orm.Ormer {
 }
 
 // @isLast 是否为最后一个sql操作
-// RespondByTransaction 事务响应
-func (c *BaseController) RespondByTransaction(orm orm.Ormer, err error, isLast bool) {
+// RespondTransactionCreated 事务响应
+func (c *BaseController) RespondTransactionCreated(orm orm.Ormer, err error, isLast bool) {
 	// 事务失败处理： 回滚事务，响应错误
 	if err != nil {
 		orm.Rollback()
@@ -99,6 +99,22 @@ func (c *BaseController) RespondByTransaction(orm orm.Ormer, err error, isLast b
 	if err == nil && isLast == true {
 		orm.Commit()
 		c.RespondCreatedJson()
+	}
+}
+
+// @isLast 是否为最后一个sql操作
+// RespondTransactionNoContent 事务响应
+func (c *BaseController) RespondTransactionNoContent(orm orm.Ormer, err error, isLast bool) {
+	// 事务失败处理： 回滚事务，响应错误
+	if err != nil {
+		orm.Rollback()
+		c.RespondBadJson(err)
+	}
+
+	// 事务成功且是最后一条数据操作: 提交事务，响应成功
+	if err == nil && isLast == true {
+		orm.Commit()
+		c.RespondNoContentJson()
 	}
 }
 

@@ -42,8 +42,7 @@ func GetArticleById(id int64) (v *Article, err error) {
 
 // UpdateArticle updates Article by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateArticleById(m *Article) (err error) {
-	o := orm.NewOrm()
+func UpdateArticleById(o orm.Ormer, m *Article) (err error) {
 	v := Article{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
