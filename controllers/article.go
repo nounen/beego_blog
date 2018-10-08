@@ -55,25 +55,16 @@ func (c *ArticleController) Store() {
 	c.checkTagIds(tagIds)
 
 	// 事务
-	o := orm.NewOrm()
-	o.Begin()
+	orm := orm.NewOrm()
+	orm.Begin()
 
 	// 文章数据
-	articleId, err := o.Insert(article)
-	if err != nil {
-		o.Rollback()
-		c.RespondBadJson(err)
-	}
+	articleId, err1 := orm.Insert(article)
+	c.RespondByTransaction(orm, err1, false)
 
 	// 标签关联
-	multiErr := services.InsertMultiArticleTag(o, articleId, tagIds)
-	if multiErr == nil {
-		o.Commit()
-		c.RespondCreatedJson()
-	} else {
-		o.Rollback()
-		c.RespondBadJson(multiErr)
-	}
+	err2 := services.InsertMultiArticleTag(orm, articleId, tagIds)
+	c.RespondByTransaction(orm, err2, true)
 }
 
 // Show 查看数据

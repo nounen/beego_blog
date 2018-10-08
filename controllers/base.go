@@ -4,6 +4,7 @@ import (
 	"beego_blog/utils"
 	"encoding/json"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/validation"
 	"net/http"
 	"strconv"
@@ -76,6 +77,22 @@ func (c *BaseController) RespondNoContentJson() {
 	c.Ctx.Output.SetStatus(http.StatusNoContent)
 	c.Json["message"] = "操作成功"
 	c.RespondJson()
+}
+
+// @isLast 是否为最后一个sql操作
+// RespondByTransaction 事务响应
+func (c *BaseController) RespondByTransaction(orm orm.Ormer, err error, isLast bool) {
+	// 事务失败处理： 回滚事务，响应错误
+	if err != nil {
+		orm.Rollback()
+		c.RespondBadJson(err)
+	}
+
+	// 事务成功且是最后一条数据操作
+	if err == nil && isLast == true {
+		orm.Commit()
+		c.RespondCreatedJson()
+	}
 }
 
 // UnmarshalRequestJson 解码json请求数据
