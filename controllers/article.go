@@ -47,18 +47,32 @@ func (c *ArticleController) Index() {
 
 // Store 创建数据
 func (c *ArticleController) Store() {
+	// 数据解析 验证
 	article := c.getArticleFromRequest()
-	article.UserId = 1
 	c.checkArticleFromRequest(article)
 
 	tagIds := c.getTagIdsFromRequest()
 	c.checkTagIds(tagIds)
 
-	if articleId, err := models.AddArticle(article); err == nil {
-		services.InsertMultiArticleTag(articleId, tagIds)
+	// 事务
+	o := orm.NewOrm()
+	o.Begin()
+
+	// 文章数据
+	articleId, err := o.Insert(article)
+	if err != nil {
+		o.Rollback()
+		c.RespondBadJson(err)
+	}
+
+	// 标签关联
+	multiErr := services.InsertMultiArticleTag(o, articleId, tagIds)
+	if multiErr == nil {
+		o.Commit()
 		c.RespondCreatedJson()
 	} else {
-		c.RespondBadJson(err)
+		o.Rollback()
+		c.RespondBadJson(multiErr)
 	}
 }
 

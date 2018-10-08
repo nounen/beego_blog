@@ -11,17 +11,19 @@ func GetArticleTagQuery() orm.QuerySeter {
 }
 
 // InsertMultiArticleTag 文章标签关联
-func InsertMultiArticleTag(articleId int64, tagIds []int64) {
+func InsertMultiArticleTag(o orm.Ormer, articleId int64, tagIds []int64) error {
 	articleTags := []models.ArticleTag{}
 
 	for _, tagId := range tagIds {
 		articleTag := models.ArticleTag{
 			ArticleId: articleId,
-			TagId: tagId,
+			TagId:     tagId,
 		}
 
-		articleTags = append(articleTags,articleTag)
+		articleTags = append(articleTags, articleTag)
 	}
 
-	orm.NewOrm().InsertMulti(10, articleTags)
+	_, err := o.InsertMulti(10, articleTags)
+
+	return err
 }
