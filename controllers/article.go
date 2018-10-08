@@ -93,11 +93,11 @@ func (c *ArticleController) Show() {
 
 // Update 更新数据
 func (c *ArticleController) Update() {
-	Article := c.getArticle()
-	c.checkArticle(Article)
-	Article.Id = c.getId()
+	article := c.getArticle()
+	article.Id = c.getId()
+	c.checkArticle(article)
 
-	if err := models.UpdateArticleById(Article); err == nil {
+	if err := models.UpdateArticleById(article); err == nil {
 		c.RespondNoContentJson()
 	} else {
 		c.RespondBadJson(err)
