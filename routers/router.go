@@ -9,11 +9,12 @@ package routers
 
 import (
 	"beego_blog/controllers"
-
+	"beego_blog/filters"
 	"github.com/astaxie/beego"
 )
 
 func init() {
+
 	ns := beego.NewNamespace("/v1",
 		beego.NSNamespace("/tag",
 			beego.NSRouter("/", &controllers.TagController{}, "get:Index"),
@@ -31,5 +32,9 @@ func init() {
 			beego.NSRouter("/?:id:int", &controllers.ArticleController{}, "delete:Delete"),
 		),
 	)
+
 	beego.AddNamespace(ns)
+
+	// 中间件
+	beego.InsertFilter("/*", beego.BeforeRouter, filters.TestFilter())
 }
