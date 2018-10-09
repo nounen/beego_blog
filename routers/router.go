@@ -31,6 +31,11 @@ func init() {
 			beego.NSRouter("/?:id:int", &controllers.ArticleController{}, "put:Update"),
 			beego.NSRouter("/?:id:int", &controllers.ArticleController{}, "delete:Delete"),
 		),
+
+		beego.NSNamespace("/login",
+			beego.NSRouter("/login", &controllers.LoginController{}, "post:Login"),
+			beego.NSRouter("/logout", &controllers.LoginController{}, "delete:Logout"),
+		),
 	)
 
 	beego.AddNamespace(ns)
