@@ -1,8 +1,9 @@
 package controllers
 
 import (
-	"fmt"
-	"github.com/dgrijalva/jwt-go"
+	"beego_blog/utils"
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 type LoginController struct {
@@ -11,17 +12,13 @@ type LoginController struct {
 
 // Login 用户登录，得到 jwt token
 func (c *LoginController) Login() {
-	mySigningKey := []byte("AllYourBase")
+	token, _ := utils.GenerateToken("admin", "111111", 1)
 
-	// Create the Claims
-	claims := &jwt.StandardClaims{
-		ExpiresAt: 15000,
-		Issuer:    "test",
-	}
+	claims, _ := utils.ParseToken(token)
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	ss, err := token.SignedString(mySigningKey)
-	fmt.Printf("%v %v", ss, err)
+	beego.Debug(token)
+	beego.Debug(claims)
+	logs.Debug(claims)
 }
 
 func (c *LoginController) Logout() {}
