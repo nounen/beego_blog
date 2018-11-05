@@ -199,3 +199,9 @@ func (c *BaseController) getFilters(defaultOrder bool) *utils.Filters {
 
 	return &filters
 }
+
+// dd debug
+func (c *BaseController) dd(value interface{}) {
+	beego.Debug(value)
+	c.StopRun()
+}

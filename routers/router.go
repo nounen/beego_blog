@@ -32,6 +32,14 @@ func init() {
 			beego.NSRouter("/?:id:int", &controllers.ArticleController{}, "delete:Delete"),
 		),
 
+		beego.NSNamespace("/user",
+			//beego.NSRouter("/", &controllers.UserController{}, "get:Index"),
+			beego.NSRouter("/", &controllers.UserController{}, "post:Store"),
+			//beego.NSRouter("/?:id:int", &controllers.UserController{}, "get:Show"),
+			beego.NSRouter("/?:id:int", &controllers.UserController{}, "put:Update"),
+			//beego.NSRouter("/?:id:int", &controllers.UserController{}, "delete:Delete"),
+		),
+
 		beego.NSNamespace("/login",
 			beego.NSRouter("/login", &controllers.LoginController{}, "post:Login"),
 			beego.NSRouter("/logout", &controllers.LoginController{}, "delete:Logout"),
