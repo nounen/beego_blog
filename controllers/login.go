@@ -18,13 +18,13 @@ func (c *LoginController) Login() {
 	c.checkLoginInfoFromRequest(loginInfo)
 
 	user, _ := models.GetUserByName(loginInfo.Name)
-	if utils.IsNil(user) {
+	if user == nil {
 		err := errors.New("用户不存在")
 		c.RespondBadJson(err)
 	}
 
 	result := utils.CheckEncryption(user.Password, loginInfo.Password)
-	if !utils.IsNil(result) {
+	if !(result == nil) {
 		err := errors.New("密码错误")
 		c.RespondBadJson(err)
 	}
