@@ -16,7 +16,8 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-func GenerateToken(username, password string, id int64) (string, error) {
+// GenerateToken 生成 jwt token
+func GenerateToken(id int64, username, password string) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(3 * time.Hour)
 

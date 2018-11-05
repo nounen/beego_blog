@@ -41,3 +41,14 @@ func UpdateUserById(m *User) (err error) {
 	}
 	return
 }
+
+// GetUserByName retrieves User by Name. Returns error if
+// Id doesn't exist
+func GetUserByName(name string) (v *User, err error) {
+	o := orm.NewOrm()
+	v = &User{Name: name}
+	if err = o.QueryTable(new(User)).Filter("Name", name).One(v); err == nil {
+		return v, nil
+	}
+	return nil, err
+}
