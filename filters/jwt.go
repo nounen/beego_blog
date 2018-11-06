@@ -2,7 +2,6 @@ package filters
 
 import (
 	"beego_blog/utils"
-	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"net/http"
 )
@@ -10,8 +9,7 @@ import (
 // TestFilter 中间件测试案例
 func JwtFilter() func(ctx *context.Context) {
 	return func(ctx *context.Context) {
-		userId, err := utils.GetUserId(ctx)
-		beego.Debug(userId)
+		_, err := utils.GetUserId(ctx)
 
 		if !(err == nil) {
 			// 用户登录提交信息
