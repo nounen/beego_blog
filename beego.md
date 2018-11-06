@@ -33,3 +33,11 @@ git clone https://github.com/golang/crypto
 ```
 ab -n 1000 -c 100 -H "Content-Type: application/json" -H "Authorization: xxx" http://localhost:8080/v1/tag/1
 ```
+
+
+### TODO
+* 如何热更新： https://beego.me/docs/module/grace.md
+
+* cache 使用 
+
+* vue 端
