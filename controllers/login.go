@@ -29,7 +29,7 @@ func (c *LoginController) Login() {
 		c.RespondBadJson(err)
 	}
 
-	token, _ := utils.GenerateToken(user.Id, user.Name, user.Password)
+	token, _ := utils.GenerateToken(user.Id, user.Name)
 	c.Json["token"] = &token
 	c.RespondJson()
 	//claims, _ := utils.ParseToken(token)
