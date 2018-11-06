@@ -28,3 +28,8 @@ git clone https://github.com/golang/crypto
 * https://beego.me/docs/mvc/controller/router.md
 
 * 路由分组 嵌套
+
+### ab 测试 (含 header token)
+```
+ab -n 1000 -c 100 -H "Content-Type: application/json" -H "Authorization: xxx" http://localhost:8080/v1/tag/1
+```
