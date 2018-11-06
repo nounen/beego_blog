@@ -37,7 +37,21 @@ func (c *LoginController) Login() {
 }
 
 func (c *LoginController) Logout() {
+	token := c.Ctx.Request.Header.Get("Authorization")
+	if token == "" {
+		err := errors.New("请先登录(没有token)")
+		c.RespondBadJson(err)
+	}
 
+	claims, _ := utils.ParseToken(token)
+	if claims == nil {
+		err := errors.New("登录失效(请重新登录)")
+		c.RespondBadJson(err)
+	}
+
+	c.Json["token"] = &token
+	c.Json["claims"] = claims
+	c.RespondJson()
 }
 
 // getLoginInfoFromRequest 获取表单提交数据

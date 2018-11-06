@@ -14,8 +14,12 @@ import (
 )
 
 func init() {
+	login := beego.NewNamespace("/login",
+		beego.NSRouter("/login", &controllers.LoginController{}, "post:Login"),
+		beego.NSRouter("/logout", &controllers.LoginController{}, "post:Logout"),
+	)
 
-	ns := beego.NewNamespace("/v1",
+	v1 := beego.NewNamespace("/v1",
 		beego.NSNamespace("/tag",
 			beego.NSRouter("/", &controllers.TagController{}, "get:Index"),
 			beego.NSRouter("/", &controllers.TagController{}, "post:Store"),
@@ -39,15 +43,10 @@ func init() {
 			beego.NSRouter("/?:id:int", &controllers.UserController{}, "put:Update"),
 			//beego.NSRouter("/?:id:int", &controllers.UserController{}, "delete:Delete"),
 		),
-
-		beego.NSNamespace("/login",
-			beego.NSRouter("/login", &controllers.LoginController{}, "post:Login"),
-			beego.NSRouter("/logout", &controllers.LoginController{}, "delete:Logout"),
-		),
 	)
 
-	beego.AddNamespace(ns)
+	beego.AddNamespace(login, v1)
 
 	// 中间件
-	beego.InsertFilter("/*", beego.BeforeRouter, filters.TestFilter())
+	beego.InsertFilter("/v1/*", beego.BeforeRouter, filters.JwtFilter())
 }

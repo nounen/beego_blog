@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"errors"
+	"github.com/astaxie/beego/context"
 	"github.com/dgrijalva/jwt-go"
 	"time"
 )
@@ -35,6 +37,7 @@ func GenerateToken(id int64, name string) (string, error) {
 	return token, err
 }
 
+// ParseToken token解析
 func ParseToken(token string) (*Claims, error) {
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return jwtSecret, nil
@@ -47,4 +50,19 @@ func ParseToken(token string) (*Claims, error) {
 	}
 
 	return nil, err
+}
+
+// GetUserId 根据token 解析出登录的用户 id
+func GetUserId(ctx *context.Context) (id int64, err error) {
+	token := ctx.Request.Header.Get("Authorization")
+	if token == "" {
+		return 0, errors.New("请先登录(没有token)")
+	}
+
+	claims, _ := ParseToken(token)
+	if claims == nil {
+		return 0, errors.New("登录失效(请重新登录)")
+	}
+
+	return claims.Id, err
 }
